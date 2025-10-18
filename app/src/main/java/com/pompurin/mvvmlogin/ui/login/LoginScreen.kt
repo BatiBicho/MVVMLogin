@@ -36,19 +36,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    navigateToHome: () -> Unit
 ) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Login(Modifier.align(Alignment.Center), viewModel)
+        Login(Modifier.align(Alignment.Center), viewModel, { navigateToHome() })
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel) {
+fun Login(modifier: Modifier, viewModel: LoginViewModel, navigateToHome: () -> Unit) {
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable : Boolean by viewModel.loginEnable.observeAsState(initial = false)
@@ -72,17 +73,20 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
             Spacer(modifier = Modifier.padding(16.dp))
             ForgotPassword()
             Spacer(modifier = Modifier.padding(8.dp))
-            LoginButton(loginEnable, {
-                coroutineScope.launch { viewModel.onLoginSelected() }
-            })
+            LoginButton(
+                loginEnable,
+                { navigateToHome() }
+                //{coroutineScope.launch { viewModel.onLoginSelected() }}
+            )
         }
     }
 }
 
 @Composable
-fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
+fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
     Button(
-        onClick = { onLoginSelected() },
+        //onClick = { onLoginSelected() },
+        onClick = { navigateToHome() },
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),

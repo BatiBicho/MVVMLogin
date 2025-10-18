@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.pompurin.mvvmlogin.navigation.NavigationWrapper
 import com.pompurin.mvvmlogin.ui.login.LoginScreen
 import com.pompurin.mvvmlogin.ui.login.LoginViewModel
 import com.pompurin.mvvmlogin.ui.theme.MVVMLoginTheme
@@ -26,11 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MVVMLoginTheme {
                 Surface (modifier = Modifier.fillMaxSize()) {
-                    WeatherApp()
-//                    LoginScreen(
-//                        modifier = Modifier.padding(innerPadding),
-//                        viewModel = LoginViewModel(),
-//                    )
+                    NavigationWrapper()
                 }
             }
         }
