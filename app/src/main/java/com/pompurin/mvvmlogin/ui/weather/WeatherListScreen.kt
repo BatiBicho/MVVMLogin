@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.pompurin.mvvmlogin.Screen
 import com.pompurin.mvvmlogin.domain.Weather
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +38,7 @@ fun WeatherListScreen(navController: NavController) {
             TopAppBar(
                 title = { Text("Clima App") },
                 actions = {
-                    IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
+                    IconButton(onClick = {}) {
                         Icon(Icons.Default.Settings, contentDescription = "Configuración")
                     }
                 }
@@ -50,9 +49,7 @@ fun WeatherListScreen(navController: NavController) {
             items(cities) { city ->
                 WeatherCard(
                     weather = city,
-                    onClick = {
-                        navController.navigate("${Screen.WeatherDetail.route}/${city.id}")
-                    }
+                    onClick = {}
                 )
             }
         }
