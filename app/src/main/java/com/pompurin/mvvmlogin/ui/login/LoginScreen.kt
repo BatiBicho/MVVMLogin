@@ -24,10 +24,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pompurin.mvvmlogin.R
@@ -91,8 +93,8 @@ fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
             .fillMaxWidth()
             .height(48.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF1E3A8A),       // Azul marino oscuro
-            contentColor = Color.White
+            containerColor = colorResource(R.color.primary),
+            contentColor = colorResource(R.color.onSurface)
         ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 4.dp,
@@ -115,7 +117,7 @@ fun ForgotPassword() {
         modifier = Modifier.clickable{},
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
-        color = Color(0xFF3B82F6)  // Azul brillante
+        color = colorResource(R.color.primary)
     )
 }
 
@@ -126,19 +128,19 @@ fun PasswordField(password: String, onTextFieldChanged:(String) -> Unit) {
         value = password,
         onValueChange = { onTextFieldChanged(it) },
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password", color = Color(0xFF94A3B8)) },
+        placeholder = { Text(text = "Password", color = colorResource(R.color.primary)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
         maxLines = 1,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = Color(0xFF1E293B),          // Azul marino muy oscuro
-            unfocusedTextColor = Color(0xFF1E293B),
+            focusedTextColor = colorResource(R.color.primary),          // Azul marino muy oscuro
+            unfocusedTextColor = colorResource(R.color.primary),
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color(0xFF1E3A8A),     // Azul marino
-            unfocusedIndicatorColor = Color(0xFFCBD5E1),   // Gris azulado claro
-            cursorColor = Color(0xFF1E3A8A),
+            focusedIndicatorColor = colorResource(R.color.primary),     // Azul marino
+            unfocusedIndicatorColor = colorResource(R.color.primary),   // Gris azulado claro
+            cursorColor = colorResource(R.color.primary),
         )
     )
 }
@@ -149,18 +151,18 @@ fun EmailField(email: String, onTextFieldChanged:(String) -> Unit) {
         value = email,
         onValueChange = { onTextFieldChanged(it) },
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Email", color = Color(0xFF94A3B8)) },
+        placeholder = { Text(text = "Email", color = colorResource(R.color.primary)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         singleLine = true,
         maxLines = 1,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = Color(0xFF1E293B),
-            unfocusedTextColor = Color(0xFF1E293B),
+            focusedTextColor = colorResource(R.color.primary),
+            unfocusedTextColor = colorResource(R.color.primary),
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color(0xFF1E3A8A),
-            unfocusedIndicatorColor = Color(0xFFCBD5E1),
-            cursorColor = Color(0xFF1E3A8A),
+            focusedIndicatorColor = colorResource(R.color.primary),
+            unfocusedIndicatorColor = colorResource(R.color.primary),
+            cursorColor = colorResource(R.color.primary),
         )
     )
 }
