@@ -1,6 +1,5 @@
 package com.pompurin.mvvmlogin.ui.login
 
-import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +12,7 @@ class LoginViewModel : ViewModel() {
     private val _password = MutableLiveData<String>()
     val password : LiveData<String> = _password
 
-    private val _loginEnable = MutableLiveData<Boolean>()
+    private val _loginEnable = MutableLiveData(true)
     val loginEnable : LiveData<Boolean> = _loginEnable
 
     private val _isLoading = MutableLiveData<Boolean>()
@@ -21,7 +20,6 @@ class LoginViewModel : ViewModel() {
     fun onLoginChanged(email: String, password: String) {
         _email.value = email
         _password.value = password
-        _loginEnable.value = isValidEmail(email) && isValidPassword(password)
     }
 
     suspend fun onLoginSelected() {
@@ -29,8 +27,4 @@ class LoginViewModel : ViewModel() {
         delay(4000)
         _isLoading.value = false
     }
-
-    private fun isValidPassword(password: String) : Boolean = password.length > 6
-
-    private fun isValidEmail(email : String) : Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

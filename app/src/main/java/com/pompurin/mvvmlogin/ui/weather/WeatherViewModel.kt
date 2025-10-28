@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.pompurin.mvvmlogin.data.WeatherRepository
 
-class WeatherViewModel : ViewModel() {
+class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() {
     private val _weatherState = MutableStateFlow<WeatherState>(WeatherState.Loading)
     val weatherState: StateFlow<WeatherState> = _weatherState.asStateFlow()
 

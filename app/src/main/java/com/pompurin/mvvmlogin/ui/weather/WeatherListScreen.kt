@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,13 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pompurin.mvvmlogin.domain.Weather
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherListScreen(navigateToHome: () -> Unit, text: String) {
-    val viewModel: WeatherViewModel = viewModel()
+fun WeatherListScreen(
+    viewModel: WeatherViewModel,
+    navigateToHome: () -> Unit,
+    text: String
+) {
     val cities by viewModel.cities.collectAsState()
 
     Scaffold(
@@ -38,7 +39,7 @@ fun WeatherListScreen(navigateToHome: () -> Unit, text: String) {
             TopAppBar(
                 title = { Text(text) },
                 actions = {
-                    IconButton(onClick = {navigateToHome()}) {
+                    IconButton(onClick = { navigateToHome() }) {
                         Icon(Icons.Default.Home, contentDescription = "Home")
                     }
                 }

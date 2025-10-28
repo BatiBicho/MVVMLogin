@@ -7,7 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background">#212121</color>
-    <color name="primary">#D1E395</color>
-    <color name="onSurface">#FF000000</color>
+
+    <color name="Crema">#FAF7F2</color>
+    <color name="Cafe_oscuro">#5C4033</color>
+    <color name="Cafe_claro">#8B6F50</color>
+    <color name="Verde_claro">#D1E395</color>
+    <color name="Verde_oscuro">#66803C</color>
+
 </resources>

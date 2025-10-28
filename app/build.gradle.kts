@@ -60,20 +60,17 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Compose
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    // Corrutinas (usando el alias del catálogo)
+    implementation(libs.kotlinx.coroutines.android)
 
-    // Corrutinas
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Retrofit para API (usando los alias del catálogo)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp.logging.interceptor)
 
-    // Retrofit para API
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    // Coil para imágenes (usando el alias del catálogo)
+    implementation(libs.coil.compose)
 
-    // Coil para imágenes
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    // ViewModel (usando el alias del catálogo)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }
