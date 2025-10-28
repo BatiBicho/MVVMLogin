@@ -36,26 +36,38 @@ import com.pompurin.mvvmlogin.R
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel,
+    viewModel: RegisterViewModel,
     navigateToHome: () -> Unit,
-    navigateToRegister: () -> Unit
+    navigateToLogin: () -> Unit
 ) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Login(Modifier.align(Alignment.Center), viewModel, { navigateToHome() }, { navigateToRegister() })
+        Register(
+            Modifier.align(Alignment.Center),
+            viewModel,
+            { navigateToHome() },
+            { navigateToLogin() }
+        )
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel, navigateToHome: () -> Unit, navigateToRegister: () -> Unit) {
+fun Register(
+    modifier: Modifier,
+    viewModel: RegisterViewModel,
+    navigateToHome: () -> Unit,
+    navigateToLogin: () -> Unit
+) {
+    val name: String by viewModel.name.observeAsState(initial = "")
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
-    val loginEnable : Boolean by viewModel.loginEnable.observeAsState(initial = false)
+    val confirmPassword: String by viewModel.confirmPassword.observeAsState(initial = "")
+    val registerEnable: Boolean by viewModel.registerEnable.observeAsState(initial = false)
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
 
@@ -70,26 +82,41 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navigateToHome: () -> U
         ) {
             HeaderImage()
             Spacer(modifier = Modifier.padding(16.dp))
-            EmailField(email, { viewModel.onLoginChanged(it, password) })
+            NameField(name, { viewModel.onRegisterChanged(it, email, password, confirmPassword) })
             Spacer(modifier = Modifier.padding(8.dp))
-            PasswordField(password, { viewModel.onLoginChanged(email, it)})
-            Spacer(modifier = Modifier.padding(16.dp))
-            ForgotPassword({ navigateToRegister() })
+            EmailField(email, { viewModel.onRegisterChanged(name, it, password, confirmPassword) })
             Spacer(modifier = Modifier.padding(8.dp))
-            LoginButton(
-                loginEnable,
-                { navigateToHome() }
-                //{coroutineScope.launch { viewModel.onLoginSelected() }}
+            PasswordField(
+                password = password,
+                placeholder = "Password",
+                onTextFieldChanged = { viewModel.onRegisterChanged(name, email, it, confirmPassword) }
             )
+            Spacer(modifier = Modifier.padding(8.dp))
+            PasswordField(
+                password = confirmPassword,
+                placeholder = "Confirm Password",
+                onTextFieldChanged = { viewModel.onRegisterChanged(name, email, password, it) }
+            )
+            Spacer(modifier = Modifier.padding(16.dp))
+            RegisterButton(
+                registerEnable,
+                {
+                    coroutineScope.launch {
+                        viewModel.onRegisterSelected()
+                        navigateToHome()
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            LoginLink(navigateToLogin)
         }
     }
 }
 
 @Composable
-fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
+fun RegisterButton(registerEnable: Boolean, onRegisterSelected: () -> Unit) {
     Button(
-        //onClick = { onLoginSelected() },
-        onClick = { navigateToHome() },
+        onClick = { onRegisterSelected() },
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -101,10 +128,10 @@ fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
             defaultElevation = 4.dp,
             pressedElevation = 2.dp
         ),
-        enabled = loginEnable
+        enabled = registerEnable
     ) {
         Text(
-            text = "Login",
+            text = "Create Account",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -112,58 +139,29 @@ fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
 }
 
 @Composable
-fun ForgotPassword(navigateToRegister: () -> Unit) {
+fun LoginLink(navigateToLogin: () -> Unit) {
     Text(
-        //text = "Forgot your password?",
-        text = "Create an Account",
-        modifier = Modifier.clickable{},
+        text = "Already have an account? Login",
+        modifier = Modifier.clickable { navigateToLogin() },
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
         color = colorResource(R.color.primary)
     )
-    Button(
-        onClick = { navigateToRegister() }
-    ) {
-        Text(
-            text = "Register",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
 }
 
 @Composable
-fun PasswordField(password: String, onTextFieldChanged:(String) -> Unit) {
-
+fun PasswordField(
+    password: String,
+    placeholder: String,
+    onTextFieldChanged: (String) -> Unit
+) {
     TextField(
         value = password,
         onValueChange = { onTextFieldChanged(it) },
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password", color = colorResource(R.color.primary)) },
+        placeholder = { Text(text = placeholder, color = colorResource(R.color.primary)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),
-        singleLine = true,
-        maxLines = 1,
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = colorResource(R.color.primary),          // Azul marino muy oscuro
-            unfocusedTextColor = colorResource(R.color.primary),
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.primary),     // Azul marino
-            unfocusedIndicatorColor = colorResource(R.color.primary),   // Gris azulado claro
-            cursorColor = colorResource(R.color.primary),
-        )
-    )
-}
-
-@Composable
-fun EmailField(email: String, onTextFieldChanged:(String) -> Unit) {
-    TextField(
-        value = email,
-        onValueChange = { onTextFieldChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Email", color = colorResource(R.color.primary)) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         singleLine = true,
         maxLines = 1,
         colors = TextFieldDefaults.colors(
@@ -178,13 +176,64 @@ fun EmailField(email: String, onTextFieldChanged:(String) -> Unit) {
     )
 }
 
+//@Composable
+//fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
+//    TextField(
+//        value = email,
+//        onValueChange = { onTextFieldChanged(it) },
+//        modifier = Modifier.fillMaxWidth(),
+//        placeholder = { Text(text = "Email", color = colorResource(R.color.primary)) },
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+//        singleLine = true,
+//        maxLines = 1,
+//        colors = TextFieldDefaults.colors(
+//            focusedTextColor = colorResource(R.color.primary),
+//            unfocusedTextColor = colorResource(R.color.primary),
+//            focusedContainerColor = Color.Transparent,
+//            unfocusedContainerColor = Color.Transparent,
+//            focusedIndicatorColor = colorResource(R.color.primary),
+//            unfocusedIndicatorColor = colorResource(R.color.primary),
+//            cursorColor = colorResource(R.color.primary),
+//        )
+//    )
+//}
+
 @Composable
-fun HeaderImage() {
-    Image(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-        contentDescription = "Header",
-        modifier = Modifier
-            .size(120.dp)
-            .padding(8.dp)
+fun NameField(name: String, onTextFieldChanged: (String) -> Unit) {
+    TextField(
+        value = name,
+        onValueChange = { onTextFieldChanged(it) },
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(text = "Full Name", color = colorResource(R.color.primary)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        singleLine = true,
+        maxLines = 1,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = colorResource(R.color.primary),
+            unfocusedTextColor = colorResource(R.color.primary),
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = colorResource(R.color.primary),
+            unfocusedIndicatorColor = colorResource(R.color.primary),
+            cursorColor = colorResource(R.color.primary),
+        )
     )
+}
+
+//@Composable
+//fun HeaderImage() {
+//    Image(
+//        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+//        contentDescription = "Header",
+//        modifier = Modifier
+//            .size(120.dp)
+//            .padding(8.dp)
+//    )
+//}
+
+// Preview para ver el diseño
+@Preview(showBackground = true)
+@Composable
+fun RegisterScreenPreview() {
+    // RegisterScreen(viewModel = RegisterViewModel())
 }

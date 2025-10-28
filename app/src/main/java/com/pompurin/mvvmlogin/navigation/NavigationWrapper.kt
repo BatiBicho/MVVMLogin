@@ -13,6 +13,8 @@ import com.pompurin.mvvmlogin.ui.Home.BlankScreen
 import com.pompurin.mvvmlogin.ui.Home.Home
 import com.pompurin.mvvmlogin.ui.login.LoginScreen
 import com.pompurin.mvvmlogin.ui.login.LoginViewModel
+import com.pompurin.mvvmlogin.ui.login.RegisterScreen
+import com.pompurin.mvvmlogin.ui.login.RegisterViewModel
 import com.pompurin.mvvmlogin.ui.weather.WeatherListScreen
 import com.pompurin.mvvmlogin.ui.weather.WeatherViewModel
 import com.pompurin.mvvmlogin.ui.weather.WeatherViewModelFactory
@@ -27,6 +29,7 @@ fun NavigationWrapper() {
     // ViewModels
     Log.d(TAG, "Creating LoginViewModel")
     val loginViewModel: LoginViewModel = viewModel()
+    val registerViewModel: RegisterViewModel = viewModel()
 
     Log.d(TAG, "Creating WeatherRepository")
     val weatherRepository = WeatherRepository(RetrofitClient.instance)
@@ -42,7 +45,18 @@ fun NavigationWrapper() {
             LoginScreen(
                 modifier = Modifier,
                 viewModel = loginViewModel,
-                navigateToHome = { navController.navigate("home") }
+                navigateToHome = { navController.navigate("home") },
+                navigateToRegister = { navController.navigate("register") }
+            )
+        }
+
+        composable("register") {
+            Log.d(TAG, "Navigating to RegisterScreen")
+            RegisterScreen(
+                modifier = Modifier,
+                viewModel = registerViewModel,
+                navigateToHome = { navController.navigate("home") },
+                navigateToLogin = { navController.navigate("login") }
             )
         }
 
