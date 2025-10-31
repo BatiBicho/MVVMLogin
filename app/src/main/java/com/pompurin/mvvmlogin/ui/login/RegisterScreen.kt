@@ -1,6 +1,5 @@
 package com.pompurin.mvvmlogin.ui.login
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,14 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -25,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -67,6 +65,8 @@ fun Register(
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
     val confirmPassword: String by viewModel.confirmPassword.observeAsState(initial = "")
+    val birthDate: String by viewModel.birthDate.observeAsState(initial = "")
+    val address: String by viewModel.address.observeAsState(initial = "")
     val registerEnable: Boolean by viewModel.registerEnable.observeAsState(initial = false)
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
@@ -82,20 +82,24 @@ fun Register(
         ) {
             HeaderImage()
             Spacer(modifier = Modifier.padding(16.dp))
-            NameField(name, { viewModel.onRegisterChanged(it, email, password, confirmPassword) })
+            NameField(name, { viewModel.onRegisterChanged(it, email, password, confirmPassword, birthDate, address) })
             Spacer(modifier = Modifier.padding(8.dp))
-            EmailField(email, { viewModel.onRegisterChanged(name, it, password, confirmPassword) })
+            EmailField(email, { viewModel.onRegisterChanged(name, it, password, confirmPassword, birthDate, address) })
+            Spacer(modifier = Modifier.padding(8.dp))
+            BirthDateField(birthDate, { viewModel.onRegisterChanged(name, email, password, confirmPassword, it, address) })
+            Spacer(modifier = Modifier.padding(8.dp))
+            AddressField(address, { viewModel.onRegisterChanged(name, email, password, confirmPassword, birthDate, it) })
             Spacer(modifier = Modifier.padding(8.dp))
             PasswordField(
                 password = password,
                 placeholder = "Password",
-                onTextFieldChanged = { viewModel.onRegisterChanged(name, email, it, confirmPassword) }
+                onTextFieldChanged = { viewModel.onRegisterChanged(name, email, it, confirmPassword, birthDate, address) }
             )
             Spacer(modifier = Modifier.padding(8.dp))
             PasswordField(
                 password = confirmPassword,
                 placeholder = "Confirm Password",
-                onTextFieldChanged = { viewModel.onRegisterChanged(name, email, password, it) }
+                onTextFieldChanged = { viewModel.onRegisterChanged(name, email, password, it, birthDate, address) }
             )
             Spacer(modifier = Modifier.padding(16.dp))
             RegisterButton(
@@ -155,83 +159,134 @@ fun PasswordField(
     placeholder: String,
     onTextFieldChanged: (String) -> Unit
 ) {
-    TextField(
+    OutlinedTextField(
         value = password,
         onValueChange = { onTextFieldChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = placeholder, color = colorResource(R.color.primary)) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = placeholder,
+                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+            )
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
         maxLines = 1,
-        colors = TextFieldDefaults.colors(
+        shape = RoundedCornerShape(25.dp),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = colorResource(R.color.primary),
             unfocusedTextColor = colorResource(R.color.primary),
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.primary),
-            unfocusedIndicatorColor = colorResource(R.color.primary),
             cursorColor = colorResource(R.color.primary),
+            focusedLabelColor = colorResource(R.color.primary),
+            unfocusedLabelColor = colorResource(R.color.primary),
+            focusedBorderColor = colorResource(R.color.primary),
+            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f),
         )
     )
 }
-
-//@Composable
-//fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
-//    TextField(
-//        value = email,
-//        onValueChange = { onTextFieldChanged(it) },
-//        modifier = Modifier.fillMaxWidth(),
-//        placeholder = { Text(text = "Email", color = colorResource(R.color.primary)) },
-//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//        singleLine = true,
-//        maxLines = 1,
-//        colors = TextFieldDefaults.colors(
-//            focusedTextColor = colorResource(R.color.primary),
-//            unfocusedTextColor = colorResource(R.color.primary),
-//            focusedContainerColor = Color.Transparent,
-//            unfocusedContainerColor = Color.Transparent,
-//            focusedIndicatorColor = colorResource(R.color.primary),
-//            unfocusedIndicatorColor = colorResource(R.color.primary),
-//            cursorColor = colorResource(R.color.primary),
-//        )
-//    )
-//}
 
 @Composable
 fun NameField(name: String, onTextFieldChanged: (String) -> Unit) {
-    TextField(
+    OutlinedTextField(
         value = name,
         onValueChange = { onTextFieldChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Full Name", color = colorResource(R.color.primary)) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = "Full Name",
+                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+            )
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         singleLine = true,
         maxLines = 1,
-        colors = TextFieldDefaults.colors(
+        shape = RoundedCornerShape(25.dp),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = colorResource(R.color.primary),
             unfocusedTextColor = colorResource(R.color.primary),
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.primary),
-            unfocusedIndicatorColor = colorResource(R.color.primary),
             cursorColor = colorResource(R.color.primary),
+            focusedLabelColor = colorResource(R.color.primary),
+            unfocusedLabelColor = colorResource(R.color.primary),
+            focusedBorderColor = colorResource(R.color.primary),
+            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f),
         )
     )
 }
 
-//@Composable
-//fun HeaderImage() {
-//    Image(
-//        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-//        contentDescription = "Header",
-//        modifier = Modifier
-//            .size(120.dp)
-//            .padding(8.dp)
-//    )
-//}
+@Composable
+fun BirthDateField(birthDate: String, onTextFieldChanged: (String) -> Unit) {
+    OutlinedTextField(
+        value = birthDate,
+        onValueChange = { onTextFieldChanged(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = "Birth Date (DD/MM/YYYY)",
+                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true,
+        maxLines = 1,
+        shape = RoundedCornerShape(25.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = colorResource(R.color.primary),
+            unfocusedTextColor = colorResource(R.color.primary),
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            cursorColor = colorResource(R.color.primary),
+            focusedLabelColor = colorResource(R.color.primary),
+            unfocusedLabelColor = colorResource(R.color.primary),
+            focusedBorderColor = colorResource(R.color.primary),
+            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f),
+        )
+    )
+}
 
-// Preview para ver el diseño
+@Composable
+fun AddressField(address: String, onTextFieldChanged: (String) -> Unit) {
+    OutlinedTextField(
+        value = address,
+        onValueChange = { onTextFieldChanged(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = "Address",
+                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        singleLine = true,
+        maxLines = 1,
+        shape = RoundedCornerShape(25.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = colorResource(R.color.primary),
+            unfocusedTextColor = colorResource(R.color.primary),
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            cursorColor = colorResource(R.color.primary),
+            focusedLabelColor = colorResource(R.color.primary),
+            unfocusedLabelColor = colorResource(R.color.primary),
+            focusedBorderColor = colorResource(R.color.primary),
+            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f),
+        )
+    )
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {

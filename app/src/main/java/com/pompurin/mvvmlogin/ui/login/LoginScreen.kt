@@ -10,13 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,11 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pompurin.mvvmlogin.R
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -74,13 +73,15 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navigateToHome: () -> U
             Spacer(modifier = Modifier.padding(8.dp))
             PasswordField(password, { viewModel.onLoginChanged(email, it)})
             Spacer(modifier = Modifier.padding(16.dp))
-            ForgotPassword({ navigateToRegister() })
+            ForgotPassword()
             Spacer(modifier = Modifier.padding(8.dp))
             LoginButton(
                 loginEnable,
                 { navigateToHome() }
                 //{coroutineScope.launch { viewModel.onLoginSelected() }}
             )
+            Spacer(modifier = Modifier.padding(8.dp))
+            Register({navigateToRegister()})
         }
     }
 }
@@ -112,68 +113,91 @@ fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
 }
 
 @Composable
-fun ForgotPassword(navigateToRegister: () -> Unit) {
+fun Register(navigateToRegister: () -> Unit) {
     Text(
-        //text = "Forgot your password?",
-        text = "Create an Account",
+        text = "Create an account",
+        modifier = Modifier.clickable{
+            navigateToRegister()
+        },
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Medium,
+        color = colorResource(R.color.primary),
+
+    )
+}
+
+@Composable
+fun ForgotPassword() {
+    Text(
+        text = "Forgot your password?",
         modifier = Modifier.clickable{},
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
         color = colorResource(R.color.primary)
     )
-    Button(
-        onClick = { navigateToRegister() }
-    ) {
-        Text(
-            text = "Register",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
 }
 
 @Composable
-fun PasswordField(password: String, onTextFieldChanged:(String) -> Unit) {
-
-    TextField(
+fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
+    OutlinedTextField(
         value = password,
         onValueChange = { onTextFieldChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password", color = colorResource(R.color.primary)) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = "Password",
+                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+            )
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
         maxLines = 1,
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = colorResource(R.color.primary),          // Azul marino muy oscuro
+        shape = RoundedCornerShape(25.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = colorResource(R.color.primary),
             unfocusedTextColor = colorResource(R.color.primary),
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.primary),     // Azul marino
-            unfocusedIndicatorColor = colorResource(R.color.primary),   // Gris azulado claro
             cursorColor = colorResource(R.color.primary),
+            focusedLabelColor = colorResource(R.color.primary),
+            unfocusedLabelColor = colorResource(R.color.primary),
+            focusedBorderColor = colorResource(R.color.primary),
+            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f),
         )
     )
 }
 
 @Composable
-fun EmailField(email: String, onTextFieldChanged:(String) -> Unit) {
-    TextField(
+fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
+    OutlinedTextField(
         value = email,
         onValueChange = { onTextFieldChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Email", color = colorResource(R.color.primary)) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = "Email",
+                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+            )
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         singleLine = true,
         maxLines = 1,
-        colors = TextFieldDefaults.colors(
+        shape = RoundedCornerShape(25.dp),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = colorResource(R.color.primary),
             unfocusedTextColor = colorResource(R.color.primary),
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.primary),
-            unfocusedIndicatorColor = colorResource(R.color.primary),
             cursorColor = colorResource(R.color.primary),
+            focusedLabelColor = colorResource(R.color.primary),
+            unfocusedLabelColor = colorResource(R.color.primary),
+            focusedBorderColor = colorResource(R.color.primary), // Borde cuando está enfocado
+            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f), // Borde cuando no está enfocado
         )
     )
 }
