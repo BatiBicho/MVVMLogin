@@ -73,4 +73,9 @@ dependencies {
 
     // ViewModel (usando el alias del catálogo)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // Google Maps (si vas a usar Google Maps)
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }

@@ -7,17 +7,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pompurin.mvvmlogin.data.RetrofitClient
-import com.pompurin.mvvmlogin.data.WeatherRepository
 import com.pompurin.mvvmlogin.ui.Home.BlankScreen
 import com.pompurin.mvvmlogin.ui.Home.Home
 import com.pompurin.mvvmlogin.ui.login.LoginScreen
 import com.pompurin.mvvmlogin.ui.login.LoginViewModel
 import com.pompurin.mvvmlogin.ui.login.RegisterScreen
 import com.pompurin.mvvmlogin.ui.login.RegisterViewModel
-import com.pompurin.mvvmlogin.ui.weather.WeatherListScreen
+import com.pompurin.mvvmlogin.ui.weather.WeatherScreen
 import com.pompurin.mvvmlogin.ui.weather.WeatherViewModel
-import com.pompurin.mvvmlogin.ui.weather.WeatherViewModelFactory
 
 private const val TAG = "NavigationWrapper"
 
@@ -27,15 +24,10 @@ fun NavigationWrapper() {
     val navController = rememberNavController()
 
     // ViewModels
-    Log.d(TAG, "Creating LoginViewModel")
+    Log.d(TAG, "Creating ViewModels")
     val loginViewModel: LoginViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
-
-    Log.d(TAG, "Creating WeatherRepository")
-    val weatherRepository = WeatherRepository(RetrofitClient.instance)
-
-    Log.d(TAG, "Creating WeatherViewModel")
-    val weatherViewModel: WeatherViewModel = viewModel(factory = WeatherViewModelFactory(weatherRepository))
+    val weatherViewModel: WeatherViewModel = viewModel()
 
     Log.d(TAG, "Setting up NavHost")
     NavHost(navController = navController, startDestination = "login") {
@@ -65,17 +57,25 @@ fun NavigationWrapper() {
             Home(
                 navigateToBack = { navController.popBackStack() },
                 navigateToDetail = { id -> navController.navigate("detail/$id") },
-                navigateToBlank = { navController.navigate("blank") }
+                navigateToBlank = { navController.navigate("blank") },
+                navigateToWeather = { navController.navigate("weather") }
             )
         }
 
         composable("detail/{id}") { backStackEntry ->
             val detailId = backStackEntry.arguments?.getString("id") ?: ""
-            Log.d(TAG, "Navigating to WeatherListScreen with id: $detailId")
-            WeatherListScreen(
+            Log.d(TAG, "Navigating to Detail with id: $detailId")
+            // Aquí puedes crear una pantalla de detalle si la necesitas
+            BlankScreen(
+                navigateToBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("weather") {
+            Log.d(TAG, "Navigating to WeatherScreen")
+            WeatherScreen(
                 viewModel = weatherViewModel,
-                navigateToHome = { navController.popBackStack() },
-                text = detailId
+                navigateToBack = { navController.popBackStack() }
             )
         }
 

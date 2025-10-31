@@ -19,7 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
-
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-//import androidx.compose.material.icons.filled.BlurOn--
+
 // --- Funciones de ayuda para obtener los colores ---
 fun colorFromHex(hex: String): Color {
     return Color(android.graphics.Color.parseColor("#$hex"))
@@ -51,9 +51,11 @@ val ColorGreenSecondary = colorFromHex("66803C") // Íconos, contraste verde (Os
 fun Home(
     navigateToBack: () -> Unit,
     navigateToDetail: (String) -> Unit,
-    navigateToBlank: () -> Unit
+    navigateToBlank: () -> Unit,
+    navigateToWeather: () -> Unit
 ) {
     val circleButtons = listOf(
+        Triple("Clima", Icons.Default.Warning, "weather"),
         Triple("Lista", Icons.Default.List, "lista"),
         Triple("Ajustes", Icons.Default.Settings, "ajustes"),
         Triple("Acerca de", Icons.Default.Info, "acerca")
@@ -92,12 +94,39 @@ fun Home(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Primera fila: Clima y Lista
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                circleButtons.forEach { (label, icon, route) ->
+                circleButtons.take(2).forEach { (label, icon, route) ->
+                    CircularButton(
+                        icon = icon,
+                        label = label,
+                        onClick = {
+                            if (route == "weather") {
+                                navigateToWeather()
+                            } else {
+                                navigateToDetail(route)
+                            }
+                        },
+                        buttonColor = ColorGreenPrimary,
+                        iconColor = ColorGreenSecondary,
+                        textColor = ColorContourDark
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Segunda fila: Ajustes y Acerca de
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                circleButtons.drop(2).forEach { (label, icon, route) ->
                     CircularButton(
                         icon = icon,
                         label = label,

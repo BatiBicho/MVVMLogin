@@ -3,9 +3,14 @@ package com.pompurin.mvvmlogin.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.delay
+import androidx.lifecycle.viewModelScope
+import com.pompurin.mvvmlogin.data.repository.Resource
+import com.pompurin.mvvmlogin.data.repository.UserRepository
+import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
+
+    private val userRepository = UserRepository()
 
     private val _name = MutableLiveData<String>()
     val name: LiveData<String> = _name
@@ -30,6 +35,10 @@ class RegisterViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+    // LiveData para mostrar mensajes de error o éxito
+    private val _registerResult = MutableLiveData<String>()
+    val registerResult: LiveData<String> = _registerResult
 
     fun onRegisterChanged(
         name: String,
@@ -71,21 +80,40 @@ class RegisterViewModel : ViewModel() {
     }
 
     private fun isValidBirthDate(birthDate: String): Boolean {
-        // Validación básica: verificar que no esté vacío y tenga longitud mínima
-        // Puedes hacer una validación más compleja si lo necesitas (formato DD/MM/YYYY)
         return birthDate.isNotEmpty() && birthDate.length >= 8
     }
 
     private fun isValidAddress(address: String): Boolean {
-        // Validación básica: verificar que tenga al menos 5 caracteres
         return address.length >= 5
     }
 
-    suspend fun onRegisterSelected() {
-        _isLoading.value = true
-        // Simular llamada a API o proceso de registro
-        delay(2000)
-        // Aquí iría la lógica real de registro
-        _isLoading.value = false
+    fun onRegisterSelected() {
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            // Llamada real a la API
+            val result = userRepository.register(
+                name = _name.value ?: "",
+                email = _email.value ?: "",
+                password = _password.value ?: "",
+                birthDate = _birthDate.value ?: "",
+                address = _address.value ?: ""
+            )
+
+            _isLoading.value = false
+
+            when (result) {
+                is Resource.Success -> {
+                    _registerResult.value = "Registro exitoso: ${result.data.name}"
+                    // Aquí puedes guardar el usuario en SharedPreferences o Room
+                }
+                is Resource.Error -> {
+                    _registerResult.value = "Error: ${result.message}"
+                }
+                is Resource.Loading -> {
+                    // Ya manejado con _isLoading
+                }
+            }
+        }
     }
 }
