@@ -1,38 +1,36 @@
 package com.pompurin.mvvmlogin.data.remote.api
 
-
-import com.pompurin.mvvmlogin.data.model.*
+import com.pompurin.mvvmlogin.data.model.WeatherResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-// ========== API DE CLIMA (OpenWeatherMap) ==========
 interface WeatherApi {
 
-    // Obtener clima actual por ciudad
-    @GET("weather")
+    // Obtener clima actual por ciudad o ubicación
+    @GET("current.json")
     suspend fun getCurrentWeather(
-        @Query("q") cityName: String,
-        @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric", // metric = Celsius
-        @Query("lang") language: String = "es"
-    ): Response<Weather>
+        @Query("key") apiKey: String,
+        @Query("q") location: String, // Puede ser: ciudad, código postal, coordenadas "lat,lon", IP, etc.
+        @Query("aqi") aqi: String = "no", // Calidad del aire (yes/no)
+        @Query("lang") language: String = "es" // Idioma de la respuesta
+    ): Response<WeatherResponse>
 
-    // Obtener clima actual por coordenadas
-    @GET("weather")
-    suspend fun getCurrentWeatherByCoordinates(
-        @Query("lat") latitude: Double,
-        @Query("lon") longitude: Double,
-        @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric",
-        @Query("lang") language: String = "es"
-    ): Response<Weather>
-
-    // Pronóstico de 5 días
-    @GET("forecast")
+    // Obtener pronóstico (forecast)
+    @GET("forecast.json")
     suspend fun getForecast(
-        @Query("q") cityName: String,
-        @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric",
+        @Query("key") apiKey: String,
+        @Query("q") location: String,
+        @Query("days") days: Int = 3, // Días de pronóstico (1-10)
+        @Query("aqi") aqi: String = "no",
+        @Query("alerts") alerts: String = "no",
         @Query("lang") language: String = "es"
-    ): Response<Weather>
+    ): Response<WeatherResponse>
+
+    // Buscar ubicaciones
+    @GET("search.json")
+    suspend fun searchLocation(
+        @Query("key") apiKey: String,
+        @Query("q") query: String
+    ): Response<List<com.pompurin.mvvmlogin.data.model.Location>>
 }

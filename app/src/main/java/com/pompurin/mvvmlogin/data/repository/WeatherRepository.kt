@@ -9,14 +9,16 @@ import kotlinx.coroutines.withContext
 class WeatherRepository {
 
     private val api = ApiClient.weatherApi
-    private val API_KEY = "TU_API_KEY_DE_OPENWEATHER" // Obtén tu key en openweathermap.org
 
-    suspend fun getCurrentWeather(cityName: String): Resource<Weather> {
+    // IMPORTANTE: Obtén tu API key gratis en https://www.weatherapi.com/
+    private val API_KEY = "e836e4b1f0e6482d9fa65902250111"
+
+    suspend fun getCurrentWeather(location: String): Resource<WeatherResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.getCurrentWeather(
-                    cityName = cityName,
-                    apiKey = API_KEY
+                    apiKey = API_KEY,
+                    location = location
                 )
 
                 if (response.isSuccessful && response.body() != null) {
@@ -25,7 +27,7 @@ class WeatherRepository {
                     Resource.Error("No se pudo obtener el clima: ${response.message()}")
                 }
             } catch (e: Exception) {
-                Resource.Error("Error de conexión: ${e.message}")
+                Resource.Error("Error de conexión: ${e.localizedMessage ?: e.message}")
             }
         }
     }
@@ -33,13 +35,14 @@ class WeatherRepository {
     suspend fun getCurrentWeatherByCoordinates(
         latitude: Double,
         longitude: Double
-    ): Resource<Weather> {
+    ): Resource<WeatherResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.getCurrentWeatherByCoordinates(
-                    latitude = latitude,
-                    longitude = longitude,
-                    apiKey = API_KEY
+                // Weather API acepta coordenadas en formato "lat,lon"
+                val location = "$latitude,$longitude"
+                val response = api.getCurrentWeather(
+                    apiKey = API_KEY,
+                    location = location
                 )
 
                 if (response.isSuccessful && response.body() != null) {
@@ -48,7 +51,27 @@ class WeatherRepository {
                     Resource.Error("No se pudo obtener el clima")
                 }
             } catch (e: Exception) {
-                Resource.Error("Error: ${e.message}")
+                Resource.Error("Error: ${e.localizedMessage ?: e.message}")
+            }
+        }
+    }
+
+    suspend fun getForecast(location: String, days: Int = 3): Resource<WeatherResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = api.getForecast(
+                    apiKey = API_KEY,
+                    location = location,
+                    days = days
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    Resource.Success(response.body()!!)
+                } else {
+                    Resource.Error("No se pudo obtener el pronóstico")
+                }
+            } catch (e: Exception) {
+                Resource.Error("Error: ${e.localizedMessage ?: e.message}")
             }
         }
     }

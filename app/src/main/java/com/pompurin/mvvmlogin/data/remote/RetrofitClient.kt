@@ -15,7 +15,7 @@ object RetrofitClient {
     private const val BASE_URL = "https://tu-api.com/api/"
 
     // URL de API de clima (ejemplo: OpenWeatherMap)
-    private const val WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/"
+    private const val WEATHER_BASE_URL = "https://api.weatherapi.com/v1/"
 
     // URL de API de mapas (si usas una diferente a Google Maps)
     private const val MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/"

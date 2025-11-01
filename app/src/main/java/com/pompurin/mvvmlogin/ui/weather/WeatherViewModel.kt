@@ -4,18 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pompurin.mvvmlogin.data.model.Weather
+import com.pompurin.mvvmlogin.data.model.WeatherResponse
 import com.pompurin.mvvmlogin.data.repository.Resource
 import com.pompurin.mvvmlogin.data.repository.WeatherRepository
 import kotlinx.coroutines.launch
-
 // ========== VIEW MODEL ==========
 class WeatherViewModel : ViewModel() {
 
     private val weatherRepository = WeatherRepository()
 
-    private val _weather = MutableLiveData<Weather?>()
-    val weather: LiveData<Weather?> = _weather
+    private val _weather = MutableLiveData<WeatherResponse?>()
+    val weather: LiveData<WeatherResponse?> = _weather
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

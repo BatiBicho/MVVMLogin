@@ -14,17 +14,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.pompurin.mvvmlogin.R
-import com.pompurin.mvvmlogin.data.model.Weather
-import com.pompurin.mvvmlogin.data.repository.Resource
-import com.pompurin.mvvmlogin.data.repository.WeatherRepository
-import kotlinx.coroutines.launch
+import androidx.core.graphics.toColorInt
 
-
+private val ColorGreenSecondary = Color("#66803C".toColorInt())
+private val ColorContourDark = Color("#5C4033".toColorInt())
+private val ColorContourLight = Color("#8B6F50".toColorInt())
 // ========== COMPOSABLE DE PANTALLA DE CLIMA ==========
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,7 +157,7 @@ fun WeatherScreen(
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = colorResource(R.color.primary).copy(alpha = 0.1f)
+                        containerColor = Color.White.copy(alpha = 0.7f)
                     ),
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -173,29 +168,34 @@ fun WeatherScreen(
                             .padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Ciudad y país
+                        // Ciudad, región y país
                         Text(
-                            text = "${w.cityName}, ${w.sys.country}",
+                            text = "${w.location.name}, ${w.location.region}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.primary)
+                            color = ColorContourDark
+                        )
+                        Text(
+                            text = w.location.country,
+                            fontSize = 16.sp,
+                            color = ColorContourLight
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // Temperatura principal
                         Text(
-                            text = "${w.main.temp.toInt()}°C",
+                            text = "${w.current.tempC.toInt()}°C",
                             fontSize = 64.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.primary)
+                            color = ColorGreenSecondary
                         )
 
-                        // Descripción
+                        // Descripción del clima
                         Text(
-                            text = w.weather.firstOrNull()?.description?.capitalize() ?: "",
+                            text = w.current.condition.text,
                             fontSize = 20.sp,
-                            color = colorResource(R.color.primary).copy(alpha = 0.8f)
+                            color = ColorContourLight
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))
@@ -206,33 +206,37 @@ fun WeatherScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             WeatherDetailItem(
-                                label = "Mín",
-                                value = "${w.main.tempMin.toInt()}°C"
-                            )
-                            WeatherDetailItem(
-                                label = "Máx",
-                                value = "${w.main.tempMax.toInt()}°C"
+                                label = "Sensación",
+                                value = "${w.current.feelslikeC.toInt()}°C"
                             )
                             WeatherDetailItem(
                                 label = "Humedad",
-                                value = "${w.main.humidity}%"
+                                value = "${w.current.humidity}%"
+                            )
+                            WeatherDetailItem(
+                                label = "Viento",
+                                value = "${w.current.windKph} km/h"
                             )
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Sensación térmica y viento
+                        // Más detalles
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             WeatherDetailItem(
-                                label = "Sensación",
-                                value = "${w.main.feelsLike.toInt()}°C"
+                                label = "Presión",
+                                value = "${w.current.pressureMb.toInt()} mb"
                             )
                             WeatherDetailItem(
-                                label = "Viento",
-                                value = "${w.wind.speed} m/s"
+                                label = "Visibilidad",
+                                value = "${w.current.visKm} km"
+                            )
+                            WeatherDetailItem(
+                                label = "UV",
+                                value = "${w.current.uv}"
                             )
                         }
                     }
