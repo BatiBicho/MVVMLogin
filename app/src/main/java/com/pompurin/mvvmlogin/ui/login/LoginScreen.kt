@@ -1,6 +1,7 @@
 package com.pompurin.mvvmlogin.ui.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -44,6 +46,7 @@ fun LoginScreen(
     Box(
         Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Login(Modifier.align(Alignment.Center), viewModel, { navigateToHome() }, { navigateToRegister() })
@@ -95,8 +98,8 @@ fun LoginButton(loginEnable: Boolean, navigateToHome: () -> Unit) {
             .fillMaxWidth()
             .height(48.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.primary),
-            contentColor = colorResource(R.color.onSurface)
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 4.dp,
@@ -121,7 +124,7 @@ fun Register(navigateToRegister: () -> Unit) {
         },
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
-        color = colorResource(R.color.primary),
+        color = MaterialTheme.colorScheme.onBackground,
 
     )
 }
@@ -133,7 +136,7 @@ fun ForgotPassword() {
         modifier = Modifier.clickable{},
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
-        color = colorResource(R.color.primary)
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -148,7 +151,7 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
         placeholder = {
             Text(
                 text = "Password",
-                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -157,15 +160,15 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
         maxLines = 1,
         shape = RoundedCornerShape(25.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = colorResource(R.color.primary),
-            unfocusedTextColor = colorResource(R.color.primary),
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            unfocusedTextColor = MaterialTheme.colorScheme.primary,
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            cursorColor = colorResource(R.color.primary),
-            focusedLabelColor = colorResource(R.color.primary),
-            unfocusedLabelColor = colorResource(R.color.primary),
-            focusedBorderColor = colorResource(R.color.primary),
-            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f),
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
         )
     )
 }
@@ -181,7 +184,7 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
         placeholder = {
             Text(
                 text = "Email",
-                color = colorResource(R.color.primary).copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -189,15 +192,15 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
         maxLines = 1,
         shape = RoundedCornerShape(25.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = colorResource(R.color.primary),
-            unfocusedTextColor = colorResource(R.color.primary),
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            unfocusedTextColor = MaterialTheme.colorScheme.primary,
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            cursorColor = colorResource(R.color.primary),
-            focusedLabelColor = colorResource(R.color.primary),
-            unfocusedLabelColor = colorResource(R.color.primary),
-            focusedBorderColor = colorResource(R.color.primary), // Borde cuando está enfocado
-            unfocusedBorderColor = colorResource(R.color.primary).copy(alpha = 0.7f), // Borde cuando no está enfocado
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = MaterialTheme.colorScheme.primary, // Borde cuando está enfocado
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), // Borde cuando no está enfocado
         )
     )
 }

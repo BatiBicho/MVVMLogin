@@ -14,6 +14,8 @@ import com.pompurin.mvvmlogin.ui.login.LoginViewModel
 import com.pompurin.mvvmlogin.ui.login.RegisterScreen
 import com.pompurin.mvvmlogin.ui.login.RegisterViewModel
 import com.pompurin.mvvmlogin.ui.maps.MapScreen
+import com.pompurin.mvvmlogin.ui.settings.SettingsScreen
+import com.pompurin.mvvmlogin.ui.settings.SettingsViewModel
 import com.pompurin.mvvmlogin.ui.weather.HikingWeatherScreen
 import com.pompurin.mvvmlogin.ui.weather.HikingWeatherViewModel
 import com.pompurin.mvvmlogin.ui.weather.WeatherScreen
@@ -22,7 +24,7 @@ import com.pompurin.mvvmlogin.ui.weather.WeatherViewModel
 private const val TAG = "NavigationWrapper"
 
 @Composable
-fun NavigationWrapper() {
+fun NavigationWrapper(settingsViewModel: SettingsViewModel) {
     Log.d(TAG, "Creating NavController")
     val navController = rememberNavController()
 
@@ -62,7 +64,8 @@ fun NavigationWrapper() {
                 navigateToBack = { navController.popBackStack() },
                 navigateToDetail = { id -> navController.navigate("detail/$id") },
                 navigateToBlank = { navController.navigate("blank") },
-                navigateToWeather = { navController.navigate("hikingWeather") }
+                navigateToWeather = { navController.navigate("hikingWeather") },
+                navigateToSettings = { navController.navigate("settings") }
             )
         }
 
@@ -87,6 +90,14 @@ fun NavigationWrapper() {
             Log.d(TAG, "Navigating to HikingWeatherScreen")
             HikingWeatherScreen (
                 viewModel = hikingWeatherViewModel,
+                navigateToBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("settings") {
+            Log.d(TAG, "Navigating to SettingsScreen")
+            SettingsScreen (
+                viewModel = settingsViewModel,
                 navigateToBack = { navController.popBackStack() }
             )
         }

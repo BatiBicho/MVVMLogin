@@ -3,33 +3,36 @@ package com.pompurin.mvvmlogin
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import com.pompurin.mvvmlogin.navigation.NavigationWrapper
-import com.pompurin.mvvmlogin.ui.login.LoginScreen
-import com.pompurin.mvvmlogin.ui.login.LoginViewModel
+import com.pompurin.mvvmlogin.ui.settings.SettingsViewModel
 import com.pompurin.mvvmlogin.ui.theme.MVVMLoginTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val settingsViewModel: SettingsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            MVVMLoginTheme {
-                Surface (modifier = Modifier.fillMaxSize(), color = colorResource(R.color.background)) {
-                    NavigationWrapper()
-                }
+            // Observar el tema
+            val isDarkTheme by settingsViewModel.isDarkTheme.observeAsState(false)
+            val useSystemTheme by settingsViewModel.useSystemTheme.observeAsState(true)
+            val isSystemInDarkTheme = isSystemInDarkTheme()
+
+            // Determinar qué tema usar
+            val shouldUseDarkTheme = if (useSystemTheme) {
+                isSystemInDarkTheme
+            } else {
+                isDarkTheme
+            }
+
+            MVVMLoginTheme(darkTheme = shouldUseDarkTheme) {
+                NavigationWrapper(settingsViewModel = settingsViewModel)
             }
         }
     }

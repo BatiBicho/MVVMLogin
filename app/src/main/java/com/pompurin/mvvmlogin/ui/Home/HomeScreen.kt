@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,20 +42,13 @@ fun colorFromHex(hex: String): Color {
     return Color(android.graphics.Color.parseColor("#$hex"))
 }
 
-// Definición de los colores de la paleta
-val ColorBackground = colorFromHex("FAF7F2")
-val ColorContourDark = colorFromHex("5C4033") // Contornos, texto principal
-val ColorContourLight = colorFromHex("8B6F50") // Contornos secundarios
-val ColorGreenPrimary = colorFromHex("D1E395") // Botones, resaltante (Claro)
-val ColorGreenSecondary = colorFromHex("66803C") // Íconos, contraste verde (Oscuro)
-// ---
-
 @Composable
 fun Home(
     navigateToBack: () -> Unit,
     navigateToDetail: (String) -> Unit,
     navigateToBlank: () -> Unit,
-    navigateToWeather: () -> Unit
+    navigateToWeather: () -> Unit,
+    navigateToSettings: () -> Unit
 ) {
     val circleButtons = listOf(
         Triple("Clima", Icons.Default.Warning, "weather"),
@@ -66,7 +60,7 @@ fun Home(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.background(ColorBackground)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -75,7 +69,7 @@ fun Home(
             text = "WALK-PIP",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.Crema)
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(Modifier.weight(1f))
 
@@ -86,13 +80,13 @@ fun Home(
                 .padding(horizontal = 24.dp)
                 .border(
                     width = 2.dp,
-                    color = colorResource(R.color.primary),
+                    color = MaterialTheme.colorScheme.onBackground,
                     shape = RoundedCornerShape(16.dp)
                 )
-//                .background(
-//                    color = Color.White.copy(alpha = 0.2f),
-//                    shape = RoundedCornerShape(16.dp)
-//                )
+                .background(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -113,9 +107,9 @@ fun Home(
                                 navigateToDetail(route)
                             }
                         },
-                        buttonColor = colorResource(R.color.primary),
-                        iconColor = colorResource(R.color.onSurface),
-                        textColor = colorResource(R.color.Crema)
+                        buttonColor = MaterialTheme.colorScheme.primary,
+                        textColor = MaterialTheme.colorScheme.onBackground,
+                        iconColor = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -128,16 +122,15 @@ fun Home(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                circleButtons.drop(2).forEach { (label, icon, route) ->
-                    CircularButton(
-                        icon = icon,
-                        label = label,
-                        onClick = { navigateToDetail(route) },
-                        buttonColor = colorResource(R.color.primary),
-                        iconColor = colorResource(R.color.onSurface),
-                        textColor = colorResource(R.color.Crema)
-                    )
-                }
+
+                CircularButton(
+                    icon = Icons.Default.Settings,
+                    label = "Settings",
+                    onClick = { navigateToSettings() },
+                    buttonColor = MaterialTheme.colorScheme.primary,
+                    iconColor = MaterialTheme.colorScheme.onPrimary,
+                    textColor = MaterialTheme.colorScheme.onBackground
+                )
             }
 
             Spacer(Modifier.height(20.dp))
@@ -147,9 +140,9 @@ fun Home(
                 icon = Icons.Default.Info, // puedes cambiar el ícono luego
                 label = "Mapa",
                 onClick = { navigateToDetail("map") },
-                buttonColor = colorResource(R.color.primary),
-                iconColor = colorResource(R.color.onSurface),
-                textColor = colorResource(R.color.Crema)
+                buttonColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onPrimary,
+                textColor = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -160,8 +153,8 @@ fun Home(
             onClick = { navigateToBack() },
             modifier = Modifier.fillMaxWidth(0.6f),
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.primary),
-                contentColor = colorResource(R.color.onSurface)
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Text("Regresar")
