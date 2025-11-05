@@ -39,7 +39,7 @@ private val DarkColorScheme = darkColorScheme(
 // ========== TEMA PRINCIPAL DE LA APP ==========
 @Composable
 fun MVVMLoginTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean, // <-- ¡CAMBIO: Quita el "= isSystemInDarkTheme()"!
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) {

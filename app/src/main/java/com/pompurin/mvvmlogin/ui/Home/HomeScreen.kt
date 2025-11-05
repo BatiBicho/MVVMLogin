@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart // <-- ¡IMPORTE NUEVO!
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -31,13 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pompurin.mvvmlogin.R
+// (Se eliminaron imports no usados como R y colorResource)
 
 // --- Funciones de ayuda para obtener los colores ---
+// (Esta función es opcional si ya no la usas, pero la dejo por si acaso)
 fun colorFromHex(hex: String): Color {
     return Color(android.graphics.Color.parseColor("#$hex"))
 }
@@ -48,11 +48,13 @@ fun Home(
     navigateToDetail: (String) -> Unit,
     navigateToBlank: () -> Unit,
     navigateToWeather: () -> Unit,
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    navigateToStats: () -> Unit // <-- ¡CAMBIO 1: Añadido nuevo navegador!
 ) {
     val circleButtons = listOf(
         Triple("Clima", Icons.Default.Warning, "weather"),
-        Triple("Rutas", Icons.Default.List, "lista"),
+        // --- CAMBIO 2: "Rutas" reemplazado por "Estadísticas" ---
+        Triple("Estadísticas", Icons.Default.BarChart, "stats"),
         Triple("Ajustes", Icons.Default.Settings, "ajustes"),
         Triple("Acerca de", Icons.Default.Info, "acerca")
     )
@@ -90,7 +92,7 @@ fun Home(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Primera fila: Clima y Lista
+            // Primera fila: Clima y Estadísticas
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -101,10 +103,11 @@ fun Home(
                         icon = icon,
                         label = label,
                         onClick = {
-                            if (route == "weather") {
-                                navigateToWeather()
-                            } else {
-                                navigateToDetail(route)
+                            // --- CAMBIO 3: Lógica de click actualizada ---
+                            when (route) {
+                                "weather" -> navigateToWeather()
+                                "stats" -> navigateToStats() // <-- Navega a estadísticas
+                                else -> navigateToDetail(route)
                             }
                         },
                         buttonColor = MaterialTheme.colorScheme.primary,
@@ -116,7 +119,7 @@ fun Home(
 
             Spacer(Modifier.height(16.dp))
 
-            // Segunda fila: Ajustes y Acerca de
+            // Segunda fila: Ajustes (tu código original tenía esto hardcodeado)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -125,7 +128,7 @@ fun Home(
 
                 CircularButton(
                     icon = Icons.Default.Settings,
-                    label = "Settings",
+                    label = "Ajustes", // Cambié "Settings" a "Ajustes"
                     onClick = { navigateToSettings() },
                     buttonColor = MaterialTheme.colorScheme.primary,
                     iconColor = MaterialTheme.colorScheme.onPrimary,
@@ -135,7 +138,7 @@ fun Home(
 
             Spacer(Modifier.height(20.dp))
 
-            // --- Botón "Pantalla en blanco" con mismo estilo ---
+            // --- Botón "Mapa" (tu código original) ---
             CircularButton(
                 icon = Icons.Default.Info, // puedes cambiar el ícono luego
                 label = "Mapa",
@@ -162,6 +165,9 @@ fun Home(
         Spacer(Modifier.height(32.dp))
     }
 }
+
+// ... (El resto de tu archivo Home.kt, 'CircularButton' y 'CardWeather',
+//      no necesita cambios) ...
 
 @Composable
 fun CircularButton(

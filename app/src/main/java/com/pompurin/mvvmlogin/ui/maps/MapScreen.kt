@@ -3,15 +3,8 @@ package com.pompurin.mvvmlogin.ui.maps
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -28,24 +21,33 @@ import androidx.lifecycle.LifecycleOwner
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.OnMapReadyCallback
 
-@Composable
-fun MapScreen(modifier: Modifier = Modifier, navigateToBack: () -> Unit) {
+// --- CAMBIO 1: Definir una clase para tus datos ---
+// Esta clase "empaqueta" todos los datos que tu UI necesita.
+data class ActivityMetrics(
+    val heartRate: String = "--- lpm",
+    val distance: String = "--- km",
+    val activeTime: String = "--:--",
+    val calories: String = "--- kcal"
+)
 
-    // --- 1. Estado para manejar la carga y el error ---
+
+@Composable
+fun MapScreen(
+    modifier: Modifier = Modifier,
+    // --- CAMBIO 2: Recibir los datos como parámetro ---
+    metrics: ActivityMetrics, // En lugar de datos estáticos
+    navigateToBack: () -> Unit
+) {
+
     var isMapLoading by remember { mutableStateOf(true) }
     var mapError by remember { mutableStateOf<String?>(null) }
 
-
-    // --- 2. Configuración del MapView y su ciclo de vida ---
-
     val context = LocalContext.current
-    val mapView = remember {
-        MapView(context)
-    }
+    val mapView = remember { MapView(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
     val savedInstanceState = rememberSaveable { Bundle() }
 
-    // ✅ Control del ciclo de vida (Sin cambios, esto está bien)
+    // --- (Toda la lógica del mapa y el ciclo de vida se mantiene igual) ---
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = LifecycleEventObserver { _: LifecycleOwner, event: Lifecycle.Event ->
             when (event) {
@@ -67,87 +69,148 @@ fun MapScreen(modifier: Modifier = Modifier, navigateToBack: () -> Unit) {
             mapView.onDestroy()
         }
     }
+    // --- (Fin de la lógica del mapa) ---
 
-    // --- 3. Definición de la UI (Layout) ---
 
-    Box(
-        modifier = modifier.fillMaxSize(),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White)
     ) {
-        // El mapa va primero (capa inferior)
-        AndroidView(
-            factory = {
-                mapView.apply {
 
-                    // ✅ AÑADIDO: Listener para capturar errores de carga
-                    addOnDidFailLoadingMapListener { errorMessage ->
-                        Log.e("MapScreen", "Error al cargar el mapa: $errorMessage")
-                        mapError = "Error al cargar el estilo del mapa: $errorMessage"
-                        isMapLoading = false
-                    }
+        // MAPA: ocupa 75% del alto
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.75f)
+        ) {
+            // ... (Todo el código de AndroidView, Botón Regresar y Superposiciones
+            //      se mantiene exactamente igual que en tu original) ...
 
-                    getMapAsync(OnMapReadyCallback { maplibreMap ->
-                        try {
-                            maplibreMap.setStyle("https://demotiles.maplibre.org/style.json") {
-                                // Éxito: El estilo se cargó
-                                isMapLoading = false
-                            }
-                        } catch (e: Exception) {
-                            // Captura de excepción síncrona (por si acaso)
-                            Log.e("MapScreen", "Excepción al setear estilo: ${e.message}")
-                            mapError = "Excepción: ${e.message}"
+            AndroidView(
+                factory = {
+                    mapView.apply {
+                        addOnDidFailLoadingMapListener { errorMessage ->
+                            Log.e("MapScreen", "Error al cargar el mapa: $errorMessage")
+                            mapError = "Error al cargar el estilo: $errorMessage"
                             isMapLoading = false
                         }
-                    })
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
 
-        // El botón va después (capa superior), siempre visible
-        Button(
-            onClick = { navigateToBack() },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
-        ) {
-            Text("Regresar")
-        }
+                        getMapAsync(OnMapReadyCallback { maplibreMap ->
+                            try {
+                                maplibreMap.setStyle("https://demotiles.maplibre.org/style.json") {
+                                    isMapLoading = false
+                                }
+                            } catch (e: Exception) {
+                                Log.e("MapScreen", "Excepción: ${e.message}")
+                                mapError = "Excepción: ${e.message}"
+                                isMapLoading = false
+                            }
+                        })
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
 
-        // --- 4. Superposiciones de Estado (Error o Carga) ---
-
-        // ✅ AÑADIDO: Muestra un mensaje de error si 'mapError' no es nulo
-        if (mapError != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "No se pudo cargar el mapa 🗺️",
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = mapError!!, // Sabemos que no es nulo aquí
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-        }
-        // ✅ AÑADIDO: Muestra un indicador de carga mientras 'isMapLoading' es true
-        else if (isMapLoading) {
+            // Botón de regreso arriba del mapa
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                contentAlignment = Alignment.TopStart
             ) {
-                CircularProgressIndicator()
+                Button(
+                    onClick = navigateToBack,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black.copy(alpha = 0.5f),
+                        contentColor = Color.White
+                    ),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("← Regresar")
+                }
+            }
+
+            // Superposiciones del mapa (error o loading)
+            when {
+                mapError != null -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.85f))
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No se pudo cargar el mapa 🗺️",
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = mapError!!,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+
+                isMapLoading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
+
+
+        // --- CAMBIO 3: PANEL DE DATOS AHORA USA EL OBJETO "metrics" ---
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFF7F7F7))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                // Los valores ahora vienen del parámetro
+                StatCellHalf(value = metrics.heartRate, label = "Ritmo Cardíaco")
+                StatCellHalf(value = metrics.distance, label = "Km Recorridos")
+            }
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                // Los valores ahora vienen del parámetro
+                StatCellHalf(value = metrics.activeTime, label = "Tiempo Activo")
+                StatCellHalf(value = metrics.calories, label = "Calorías")
+            }
+        }
+    }
+}
+
+// Esta función no necesita cambios, ya era reutilizable. ¡Bien hecho!
+@Composable
+fun StatCellHalf(value: String, label: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(0.5f)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
     }
 }
