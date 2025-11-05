@@ -60,22 +60,21 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Corrutinas (usando el alias del catálogo)
+    // Corrutinas
     implementation(libs.kotlinx.coroutines.android)
 
-    // Retrofit para API (usando los alias del catálogo)
+    // Retrofit
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging.interceptor)
 
-    // Coil para imágenes (usando el alias del catálogo)
+    // Coil para imágenes
     implementation(libs.coil.compose)
 
-    // ViewModel (usando el alias del catálogo)
+    // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // Google Maps (si vas a usar Google Maps)
-    implementation("com.google.maps.android:maps-compose:4.3.0")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    // MapLibre (solo esta)
+    implementation("org.maplibre.gl:android-sdk:11.11.0")
 }
+

@@ -56,7 +56,7 @@ fun Home(
 ) {
     val circleButtons = listOf(
         Triple("Clima", Icons.Default.Warning, "weather"),
-        Triple("Lista", Icons.Default.List, "lista"),
+        Triple("Rutas", Icons.Default.List, "lista"),
         Triple("Ajustes", Icons.Default.Settings, "ajustes"),
         Triple("Acerca de", Icons.Default.Info, "acerca")
     )
@@ -142,9 +142,9 @@ fun Home(
 
             // --- Botón "Pantalla en blanco" con mismo estilo ---
             CircularButton(
-                icon = Icons.Default.Info,
-                label = "Pantalla vacía",
-                onClick = { navigateToBlank() },
+                icon = Icons.Default.Info, // puedes cambiar el ícono luego
+                label = "Mapa",
+                onClick = { navigateToDetail("map") },
                 buttonColor = ColorGreenPrimary,
                 iconColor = ColorGreenSecondary,
                 textColor = ColorContourDark

@@ -13,6 +13,7 @@ import com.pompurin.mvvmlogin.ui.login.LoginScreen
 import com.pompurin.mvvmlogin.ui.login.LoginViewModel
 import com.pompurin.mvvmlogin.ui.login.RegisterScreen
 import com.pompurin.mvvmlogin.ui.login.RegisterViewModel
+import com.pompurin.mvvmlogin.ui.maps.MapScreen
 import com.pompurin.mvvmlogin.ui.weather.WeatherScreen
 import com.pompurin.mvvmlogin.ui.weather.WeatherViewModel
 
@@ -64,11 +65,11 @@ fun NavigationWrapper() {
 
         composable("detail/{id}") { backStackEntry ->
             val detailId = backStackEntry.arguments?.getString("id") ?: ""
-            Log.d(TAG, "Navigating to Detail with id: $detailId")
-            // Aquí puedes crear una pantalla de detalle si la necesitas
-            BlankScreen(
-                navigateToBack = { navController.popBackStack() }
-            )
+
+            when (detailId) {
+                "map" -> MapScreen(navigateToBack = { navController.popBackStack() })
+                else -> BlankScreen(navigateToBack = { navController.popBackStack() })
+            }
         }
 
         composable("weather") {
