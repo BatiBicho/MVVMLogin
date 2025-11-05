@@ -30,9 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pompurin.mvvmlogin.R
 
 // --- Funciones de ayuda para obtener los colores ---
 fun colorFromHex(hex: String): Color {
@@ -64,7 +66,7 @@ fun Home(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorBackground)
+            //.background(ColorBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -73,7 +75,7 @@ fun Home(
             text = "WALK-PIP",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
-            color = ColorContourDark
+            color = colorResource(R.color.Crema)
         )
         Spacer(Modifier.weight(1f))
 
@@ -84,13 +86,13 @@ fun Home(
                 .padding(horizontal = 24.dp)
                 .border(
                     width = 2.dp,
-                    color = ColorContourLight.copy(alpha = 0.8f),
+                    color = colorResource(R.color.primary),
                     shape = RoundedCornerShape(16.dp)
                 )
-                .background(
-                    color = Color.White.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(16.dp)
-                )
+//                .background(
+//                    color = Color.White.copy(alpha = 0.2f),
+//                    shape = RoundedCornerShape(16.dp)
+//                )
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -111,9 +113,9 @@ fun Home(
                                 navigateToDetail(route)
                             }
                         },
-                        buttonColor = ColorGreenPrimary,
-                        iconColor = ColorGreenSecondary,
-                        textColor = ColorContourDark
+                        buttonColor = colorResource(R.color.primary),
+                        iconColor = colorResource(R.color.onSurface),
+                        textColor = colorResource(R.color.Crema)
                     )
                 }
             }
@@ -131,9 +133,9 @@ fun Home(
                         icon = icon,
                         label = label,
                         onClick = { navigateToDetail(route) },
-                        buttonColor = ColorGreenPrimary,
-                        iconColor = ColorGreenSecondary,
-                        textColor = ColorContourDark
+                        buttonColor = colorResource(R.color.primary),
+                        iconColor = colorResource(R.color.onSurface),
+                        textColor = colorResource(R.color.Crema)
                     )
                 }
             }
@@ -145,9 +147,9 @@ fun Home(
                 icon = Icons.Default.Info, // puedes cambiar el ícono luego
                 label = "Mapa",
                 onClick = { navigateToDetail("map") },
-                buttonColor = ColorGreenPrimary,
-                iconColor = ColorGreenSecondary,
-                textColor = ColorContourDark
+                buttonColor = colorResource(R.color.primary),
+                iconColor = colorResource(R.color.onSurface),
+                textColor = colorResource(R.color.Crema)
             )
         }
 
@@ -158,8 +160,8 @@ fun Home(
             onClick = { navigateToBack() },
             modifier = Modifier.fillMaxWidth(0.6f),
             colors = ButtonDefaults.buttonColors(
-                containerColor = ColorGreenPrimary,
-                contentColor = ColorContourDark
+                containerColor = colorResource(R.color.primary),
+                contentColor = colorResource(R.color.onSurface)
             )
         ) {
             Text("Regresar")
@@ -201,4 +203,9 @@ fun CircularButton(
             color = textColor
         )
     }
+}
+
+@Composable
+fun CardWeather(){
+
 }

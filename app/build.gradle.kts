@@ -76,5 +76,8 @@ dependencies {
 
     // MapLibre (solo esta)
     implementation("org.maplibre.gl:android-sdk:11.11.0")
+
+    // Google Play Services Location (para GPS)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }
 
